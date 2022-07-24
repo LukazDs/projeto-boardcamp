@@ -1,5 +1,4 @@
 import connection from "../dbStrategy/database.js";
-import { categorySchema } from "../schemas/categoriesSchemas.js";
 
 export async function getCategories(_req, res) {
 
@@ -17,20 +16,15 @@ export async function getCategories(_req, res) {
 export async function insertCategories(req, res) {
 
     const {name} = req.body;
+    
+    try {
 
-    const query = `
+        const insertQuery = `
         INSERT INTO categories (name)
         VALUES ($1);
         `;
-    
-    const validation = categorySchema.validate(req.body)
 
-    if(validation.error) {
-        res.sendStatus(422);
-    }
-    
-    try {
-        await connection.query(query, [name]);
+        await connection.query(insertQuery, [name]);
         res.sendStatus(201)
 
     } catch (error) {
