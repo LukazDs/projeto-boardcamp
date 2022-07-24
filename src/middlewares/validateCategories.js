@@ -12,10 +12,10 @@ async function validateCategory(req, res, next) {
         return;
     }
 
-    const query = 'SELECT * FROM categories WHERE name = $1';
-    const { rows: categoryName } = await connection.query(query, [name]);
+    const nameQuery = 'SELECT * FROM categories WHERE name = $1';
+    const { rows: category } = await connection.query(nameQuery, [name]);
 
-    if (categoryName.length !== 0) {
+    if (category.length !== 0) {
         res.sendStatus(409);
         return;
     }

@@ -3,7 +3,7 @@ import connection from "../dbStrategy/database.js";
 export async function getCategories(_req, res) {
 
     const query = 'SELECT * FROM categories';
-    
+
     try {
         const { rows: categories } = await connection.query(query);
         res.status(200).send(categories);
@@ -13,10 +13,10 @@ export async function getCategories(_req, res) {
     }
 }
 
-export async function insertCategories(req, res) {
+export async function insertCategory(req, res) {
 
-    const {name} = req.body;
-    
+    const { name } = req.body;
+
     try {
 
         const insertQuery = `
