@@ -12,3 +12,21 @@ export async function getCategories(_req, res) {
         res.sendStatus(500);
     }
 }
+
+export async function insertCategories(req, res) {
+
+    const {name} = req.body;
+
+    const query = `
+        INSERT INTO categories (name)
+        VALUES ($1);
+        `;
+    
+    try {
+        await connection.query(query, [name]);
+        res.sendStatus(201)
+
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
