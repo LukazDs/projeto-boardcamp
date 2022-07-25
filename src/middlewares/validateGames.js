@@ -32,4 +32,19 @@ async function validateGame(req, res, next) {
 
 }
 
-export default validateGame;
+async function validateGameById(req, res, next) {
+
+    const { gameId } = req.body;
+
+    const query = 'SELECT * FROM games WHERE id = $1'
+    const { rows: game } = await connection.query(query, [gameId]);
+
+    if (game.length === 0) {
+        res.sendStatus(400);
+        return;
+    }
+
+    next();
+}
+
+export { validateGame, validateGameById };

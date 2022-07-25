@@ -31,7 +31,7 @@ async function validateCustomer(req, res, next) {
 
 async function validateCustomerById(req, res, next) {
 
-    const { id } = req.params;
+    const id = req.params.id ? req.params.id : req.body.customerId;
 
     const query = `SELECT * FROM customers WHERE id = $1`;
     const { rows: customer } = await connection.query(query, [id]);
@@ -49,10 +49,22 @@ async function validateCustomerById(req, res, next) {
 async function validateUpdateCustomerById(req, res, next) {
 
     const { id } = req.params;
-    const { cpf } = req.body;
+    const { cpf, birthday } = req.body;
 
     const cpfQuery = 'SELECT * FROM customers WHERE cpf = $1';
     const { rows: customer } = await connection.query(cpfQuery, [cpf]);
+
+    const validation = customerSchema.validate(req.body);
+
+    if (validation.error) {
+        res.sendStatus(422);
+        return;
+    }
+
+    if (!dayjs(birthday).isValid()) {
+        res.sendStatus(400);
+        return;
+    }
 
     if (customer.length !== 0 && customer[0].id != `${id}`) {
         res.sendStatus(409);
