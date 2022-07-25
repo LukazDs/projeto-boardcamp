@@ -42,8 +42,53 @@ export async function insertRental(req, res) {
                 originalPrice,
                 delayFee
             ]);
-    
+
         res.sendStatus(201);
+
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
+
+export async function getRentals(req, res) {
+
+    try {
+
+        const { customerId, gameId } = req.query;
+
+        let rentalQuery = `
+            SELECT rentals.*, row_to_json(customers) 
+            AS customer, row_to_json(games) 
+            AS game FROM rentals 
+            JOIN (SELECT id, name FROM customers) customers 
+            ON customers.id = rentals."customerId" 
+            JOIN (SELECT id, name, "categoryId" FROM games) games 
+            ON games.id = rentals."gameId" 
+            JOIN categories 
+            ON categories.id = games."categoryId"
+        `;
+
+        const { rows: rentals } = await connection.query(rentalQuery);
+
+        if (customerId) {
+
+            rentalQuery = `${rentalQuery} WHERE rentals."customerId" = $1`
+
+            const { rows: rentals } = await connection.query(rentalQuery, [customerId]);
+            res.send(rentals);
+            return;
+        }
+
+        if (gameId) {
+
+            rentalQuery = `${rentalQuery} WHERE rentals."gameId" = $1`
+
+            const { rows: rentals } = await connection.query(rentalQuery, [gameId]);
+            res.send(rentals);
+            return;
+        }
+
+        res.send(rentals);
 
     } catch (error) {
         res.sendStatus(500);
