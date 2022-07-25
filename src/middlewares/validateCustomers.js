@@ -32,7 +32,6 @@ async function validateCustomer(req, res, next) {
 async function validateCustomerById(req, res, next) {
 
     const id = req.params.id ? req.params.id : req.body.customerId;
-
     const query = `SELECT * FROM customers WHERE id = $1`;
     const { rows: customer } = await connection.query(query, [id]);
 

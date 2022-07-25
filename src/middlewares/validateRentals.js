@@ -15,14 +15,34 @@ async function validateRental(req, res, next) {
         res.sendStatus(400);
         return;
     }
-    
-    if(rentals.length >= stockTotal) {
+
+    if (rentals.length >= stockTotal) {
         res.sendStatus(400);
         return;
     }
 
     next();
-
 }
 
-export { validateRental };
+async function validateRentalDelete(req, res, next) {
+
+    const { id } = req.params;
+
+    const query = `SELECT * FROM rentals WHERE id = $1`;
+    const { rows: rental } = await connection.query(query, [id]);
+
+
+    if (rental.length === 0) {
+        res.sendStatus(404);
+        return;
+    }
+
+    if (!rental[0].returnDate) {
+        res.sendStatus(400);
+        return;
+    }
+
+    next();
+}
+
+export { validateRental, validateRentalDelete };

@@ -50,6 +50,22 @@ export async function insertRental(req, res) {
     }
 }
 
+export async function deleteRental(req, res) {
+
+    try {
+
+        const { id } = req.params;
+
+        const rentalQuery = `DELETE FROM rentals WHERE id = $1`;
+        await connection.query(rentalQuery, [id]);
+
+        res.sendStatus(200);
+
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
+
 export async function getRentals(req, res) {
 
     try {
