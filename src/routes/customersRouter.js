@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { insertCustomer } from '../controllers/customersController.js';
-import validateCustomer from '../middlewares/validateCustomers.js';
-///import validateGame from '../middlewares/validateGames.js';
+import { getCustomerById, getCustomers, insertCustomer } from '../controllers/customersController.js';
+import { validateCustomer, validateCustomerById } from '../middlewares/validateCustomers.js';
 
 const router = Router();
 
-///router.get('/games', getGames)
+router.get('/customers', getCustomers)
+router.get('/customers/:id', validateCustomerById, getCustomerById)
 router.post('/customers', validateCustomer, insertCustomer)
 
 export default router;
