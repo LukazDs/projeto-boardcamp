@@ -6,10 +6,10 @@ async function validateCustomer(req, res, next) {
 
     const { birthday, cpf } = req.body;
 
-    const validation = customerSchema.validate(req.body)
+    const validation = customerSchema.validate(req.body);
 
     const cpfQuery = 'SELECT * FROM customers WHERE cpf = $1';
-    const { rows: game } = await connection.query(cpfQuery, [cpf]);
+    const { rows: customer } = await connection.query(cpfQuery, [cpf]);
 
     if (validation.error) {
         res.sendStatus(422);
@@ -21,7 +21,7 @@ async function validateCustomer(req, res, next) {
         return;
     }
 
-    if (game.length !== 0) {
+    if (customer.length !== 0) {
         res.sendStatus(409);
         return;
     }
@@ -46,4 +46,20 @@ async function validateCustomerById(req, res, next) {
     next();
 }
 
-export { validateCustomer, validateCustomerById };
+async function validateUpdateCustomerById(req, res, next) {
+
+    const { id } = req.params;
+    const { cpf } = req.body;
+
+    const cpfQuery = 'SELECT * FROM customers WHERE cpf = $1';
+    const { rows: customer } = await connection.query(cpfQuery, [cpf]);
+
+    if (customer.length !== 0 && customer[0].id != `${id}`) {
+        res.sendStatus(409);
+        return;
+    }
+
+    next();
+}
+
+export { validateCustomer, validateCustomerById, validateUpdateCustomerById };

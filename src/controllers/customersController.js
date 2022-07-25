@@ -13,14 +13,7 @@ export async function insertCustomer(req, res) {
                 ($1, $2, $3, $4);
         `;
 
-        await connection.query(
-            insertQuery,
-            [
-                name,
-                phone,
-                cpf,
-                birthday,
-            ]);
+        await connection.query(insertQuery, [name, phone, cpf, birthday]);
 
         res.sendStatus(201);
 
@@ -56,6 +49,28 @@ export async function getCustomerById(_req, res) {
 
         const { customer } = res.locals
         res.status(200).send(customer);
+
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
+
+export async function updateCustomer(req, res) {
+
+    try {
+
+        const { id } = req.params;
+        const { name, phone, cpf, birthday } = req.body;
+
+        const query = `
+                UPDATE customers 
+                SET name = $1, phone = $2, cpf = $3, birthday = $4  
+                WHERE id = $5
+            `;
+
+        await connection.query(query, [name, phone, cpf, birthday, id]);
+
+        res.sendStatus(200);
 
     } catch (error) {
         res.sendStatus(500);

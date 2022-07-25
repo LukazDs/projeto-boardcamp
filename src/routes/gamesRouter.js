@@ -4,7 +4,7 @@ import validateGame from '../middlewares/validateGames.js';
 
 const router = Router();
 
-router.get('/games', getGames)
-router.post('/games', validateGame, insertGame)
+router.get('/games', getGames);
+router.post('/games', validateGame, insertGame);
 
 export default router;
