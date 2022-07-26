@@ -7,10 +7,6 @@ const { Pool } = pg;
 
 const URL = process.env.DATABASE_URL;
 
-const connection = new Pool({
-  connectionString: URL
-});
-
-
+const connection = new Pool({ connectionString: URL });
 
 export default connection;

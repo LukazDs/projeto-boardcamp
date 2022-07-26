@@ -4,6 +4,13 @@ async function validateRental(req, res, next) {
 
     const { daysRented, gameId } = req.body;
 
+    if (daysRented < 0) {
+
+        res.sendStatus(400);
+        return;
+
+    }
+
     const gameQuery = `SELECT * FROM games WHERE id = $1`;
     const { rows: game } = await connection.query(gameQuery, [gameId]);
     const { stockTotal } = game[0];
@@ -11,14 +18,11 @@ async function validateRental(req, res, next) {
     const rentalQuery = `SELECT * FROM rentals WHERE "gameId" = $1`;
     const { rows: rentals } = await connection.query(rentalQuery, [gameId]);
 
-    if (daysRented < 0) {
-        res.sendStatus(400);
-        return;
-    }
-
     if (rentals.length >= stockTotal) {
+
         res.sendStatus(400);
         return;
+
     }
 
     next();
@@ -33,16 +37,21 @@ async function validateRentalDelete(req, res, next) {
 
 
     if (rental.length === 0) {
+
         res.sendStatus(404);
         return;
+
     }
 
     if (!rental[0].returnDate) {
+
         res.sendStatus(400);
         return;
+
     }
 
     next();
+
 }
 
 export { validateRental, validateRentalDelete };

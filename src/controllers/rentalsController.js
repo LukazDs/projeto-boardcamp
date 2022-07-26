@@ -6,6 +6,7 @@ export async function insertRental(req, res) {
     try {
 
         const { customerId, gameId, daysRented } = req.body;
+
         const rentDate = dayjs().format("YYYY-MM-DD");
 
         const gameQuery = `SELECT * FROM games WHERE id = $1`;
@@ -14,6 +15,7 @@ export async function insertRental(req, res) {
         const { pricePerDay } = games[0];
 
         const originalPrice = pricePerDay * daysRented;
+
         const returnDate = null;
         const delayFee = null;
 
@@ -46,7 +48,9 @@ export async function insertRental(req, res) {
         res.sendStatus(201);
 
     } catch (error) {
+
         res.sendStatus(500);
+
     }
 }
 
@@ -62,7 +66,9 @@ export async function deleteRental(req, res) {
         res.sendStatus(200);
 
     } catch (error) {
+
         res.sendStatus(500);
+
     }
 }
 
@@ -89,24 +95,28 @@ export async function getRentals(req, res) {
         if (customerId) {
 
             rentalQuery = `${rentalQuery} WHERE rentals."customerId" = $1`
-
             const { rows: rentals } = await connection.query(rentalQuery, [customerId]);
+
             res.send(rentals);
             return;
+            
         }
 
         if (gameId) {
 
             rentalQuery = `${rentalQuery} WHERE rentals."gameId" = $1`
-
             const { rows: rentals } = await connection.query(rentalQuery, [gameId]);
+
             res.send(rentals);
             return;
+
         }
 
         res.send(rentals);
 
     } catch (error) {
+
         res.sendStatus(500);
+
     }
 }
