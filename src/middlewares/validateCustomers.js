@@ -15,8 +15,8 @@ async function validateCustomer(req, res, next) {
 
     }
 
-    const cpfQuery = 'SELECT * FROM customers WHERE cpf = $1';
-    const { rows: customer } = await connection.query(cpfQuery, [cpf]);
+    const query = 'SELECT * FROM customers WHERE cpf = $1';
+    const { rows: customer } = await connection.query(query, [cpf]);
 
     if (customer.length !== 0) {
 
@@ -70,8 +70,8 @@ async function validateUpdateCustomerById(req, res, next) {
 
     }
 
-    const cpfQuery = 'SELECT * FROM customers WHERE cpf = $1 AND id <> $2';
-    const { rows: customer } = await connection.query(cpfQuery, [cpf, id]);
+    const query = 'SELECT * FROM customers WHERE cpf = $1 AND id <> $2';
+    const { rows: customer } = await connection.query(query, [cpf, id]);
 
     if (customer.length !== 0) {
 

@@ -6,12 +6,12 @@ export async function insertCustomer(req, res) {
 
         const { name, phone, cpf, birthday } = req.body;
 
-        const insertQuery = `
+        const query = `
             INSERT INTO  customers (name, phone, cpf, birthday)
             VALUES ($1, $2, $3, $4)
         `;
 
-        await connection.query(insertQuery, [name, phone, cpf, birthday]);
+        await connection.query(query, [name, phone, cpf, birthday]);
 
         res.sendStatus(201);
 

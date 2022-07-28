@@ -7,11 +7,13 @@ async function validateGame(req, res, next) {
 
     const validation = gameSchema.validate(req.body);
 
-    const idQuery = 'SELECT * FROM categories WHERE id = $1';
-    const { rows: category } = await connection.query(idQuery, [categoryId]);
+    let query = '';
 
-    const nameQuery = 'SELECT * FROM games WHERE name = $1';
-    const { rows: game } = await connection.query(nameQuery, [name]);
+    query = 'SELECT * FROM categories WHERE id = $1';
+    const { rows: category } = await connection.query(query, [categoryId]);
+
+    query = 'SELECT * FROM games WHERE name = $1';
+    const { rows: game } = await connection.query(query, [name]);
 
     if (validation.error) {
 

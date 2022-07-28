@@ -22,8 +22,8 @@ export async function insertCategory(req, res) {
 
         const { name } = req.body;
 
-        const insertQuery = `INSERT INTO categories (name) VALUES ($1)`;
-        await connection.query(insertQuery, [name]);
+        const query = `INSERT INTO categories (name) VALUES ($1)`;
+        await connection.query(query, [name]);
 
         res.sendStatus(201)
 

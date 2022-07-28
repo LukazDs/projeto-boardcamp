@@ -85,7 +85,7 @@ export async function finalizeRental(req, res) {
 
             query += `, "delayFee" = $3`;
             params.push(0);
-            
+
         }
 
         query += `WHERE id = $2`;
@@ -106,8 +106,8 @@ export async function deleteRental(req, res) {
 
         const { id } = req.params;
 
-        const rentalQuery = `DELETE FROM rentals WHERE id = $1`;
-        await connection.query(rentalQuery, [id]);
+        const query = `DELETE FROM rentals WHERE id = $1`;
+        await connection.query(query, [id]);
 
         res.sendStatus(200);
 
@@ -124,7 +124,7 @@ export async function getRentals(req, res) {
 
         const { customerId, gameId } = req.query;
 
-        let rentalQuery = `
+        let query = `
             SELECT rentals.*, row_to_json(customers) 
             AS customer, row_to_json(games) 
             AS game FROM rentals 
@@ -136,12 +136,12 @@ export async function getRentals(req, res) {
             ON categories.id = games."categoryId"
         `;
 
-        const { rows: rentals } = await connection.query(rentalQuery);
+        const { rows: rentals } = await connection.query(query);
 
         if (customerId) {
 
-            rentalQuery = `${rentalQuery} WHERE rentals."customerId" = $1`
-            const { rows: rentals } = await connection.query(rentalQuery, [customerId]);
+            query = `${query} WHERE rentals."customerId" = $1`
+            const { rows: rentals } = await connection.query(query, [customerId]);
 
             res.send(rentals);
             return;
@@ -150,8 +150,8 @@ export async function getRentals(req, res) {
 
         if (gameId) {
 
-            rentalQuery = `${rentalQuery} WHERE rentals."gameId" = $1`
-            const { rows: rentals } = await connection.query(rentalQuery, [gameId]);
+            query = `${rentalQuery} WHERE rentals."gameId" = $1`
+            const { rows: rentals } = await connection.query(query, [gameId]);
 
             res.send(rentals);
             return;

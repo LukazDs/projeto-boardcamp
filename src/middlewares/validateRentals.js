@@ -4,6 +4,8 @@ async function validateRental(req, res, next) {
 
     const { daysRented, gameId } = req.body;
 
+    let query = '';
+
     if (daysRented < 0) {
 
         res.sendStatus(400);
@@ -11,12 +13,12 @@ async function validateRental(req, res, next) {
 
     }
 
-    const gameQuery = `SELECT * FROM games WHERE id = $1`;
-    const { rows: game } = await connection.query(gameQuery, [gameId]);
+    query = `SELECT * FROM games WHERE id = $1`;
+    const { rows: game } = await connection.query(query, [gameId]);
     const { stockTotal } = game[0];
 
-    const rentalQuery = `SELECT * FROM rentals WHERE "gameId" = $1`;
-    const { rows: rentals } = await connection.query(rentalQuery, [gameId]);
+    query = `SELECT * FROM rentals WHERE "gameId" = $1`;
+    const { rows: rentals } = await connection.query(query, [gameId]);
 
     if (rentals.length >= stockTotal) {
 

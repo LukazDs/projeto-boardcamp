@@ -14,8 +14,8 @@ async function validateCategory(req, res, next) {
 
     }
 
-    const nameQuery = 'SELECT * FROM categories WHERE name = $1';
-    const { rows: category } = await connection.query(nameQuery, [name]);
+    const query = 'SELECT * FROM categories WHERE name = $1';
+    const { rows: category } = await connection.query(query, [name]);
 
     if (category.length !== 0) {
 
