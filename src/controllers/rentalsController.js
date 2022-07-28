@@ -54,6 +54,52 @@ export async function insertRental(req, res) {
     }
 }
 
+export async function finalizeRental(req, res) {
+
+    try {
+
+        const { id } = req.params;
+
+        let query = `SELECT * FROM rentals WHERE id = $1`;
+
+        const { rows: rentals } = await connection.query(query, [id]);
+        const { rentDate, daysRented, gameId } = rentals[0];
+
+        const deliveryDate = dayjs(rentDate).add(daysRented, 'day').format('YYYY-MM-DD');
+        const returnDate = dayjs().format('YYYY-MM-DD');
+        const diffDate = dayjs(returnDate).diff(deliveryDate, 'day');
+
+        query = `SELECT * FROM games WHERE games.id = $1`
+        const { rows: game } = await connection.query(query, [gameId]);
+        const { pricePerDay } = game[0];
+
+        query = `UPDATE rentals SET "returnDate" = $1`;
+        const params = [returnDate, id];
+
+        if (diffDate > 0) {
+
+            query += `, "delayFee" = $3`;
+            params.push(diffDate * pricePerDay);
+        
+        } else {
+
+            query += `, "delayFee" = $3`;
+            params.push(0);
+            
+        }
+
+        query += `WHERE id = $2`;
+        await connection.query(query, params);
+
+        res.sendStatus(201);
+
+    } catch (error) {
+
+        res.sendStatus(500);
+
+    }
+}
+
 export async function deleteRental(req, res) {
 
     try {
@@ -99,7 +145,7 @@ export async function getRentals(req, res) {
 
             res.send(rentals);
             return;
-            
+
         }
 
         if (gameId) {

@@ -54,4 +54,30 @@ async function validateRentalDelete(req, res, next) {
 
 }
 
-export { validateRental, validateRentalDelete };
+async function validateRentalById(req, res, next) {
+
+    const { id } = req.params;
+
+    const query = `SELECT * FROM rentals WHERE id = $1`;
+    const { rows: rental } = await connection.query(query, [id]);
+
+
+    if (rental.length === 0) {
+
+        res.sendStatus(404);
+        return;
+
+    }
+
+    if (rental[0].returnDate) {
+
+        res.sendStatus(400);
+        return;
+
+    }
+
+    next();
+
+}
+
+export { validateRental, validateRentalDelete, validateRentalById };
